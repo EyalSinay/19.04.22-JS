@@ -774,7 +774,7 @@ carMarket.setPropertyBrandToAllCars = function () {
     });
   });
 }
-carMarket.setPropertyBrandToAllCars();
+// carMarket.setPropertyBrandToAllCars();
 // console.log(carMarket);
 
 
@@ -813,7 +813,7 @@ carMarket.setNewCarToAgency = function (idAgency, carObject) {
 //? @param {string} -  Car id
 // ? @return {}
 carMarket.deleteCarFromAgency = function (idAgency, idCar) {
-  const carsAgency = carMarket.getAllCarToBuyByAgencyId(idAgency);
+  const carsAgency = this.getAllCarToBuyByAgencyId(idAgency);
   for (obj of carsAgency) {
     const carsIndex = obj.models.findIndex((objCar) => {
       return objCar.carNumber === idCar;
@@ -831,19 +831,47 @@ carMarket.deleteCarFromAgency = function (idAgency, idCar) {
 //? @param {string} - agencyId
 //? @param {number} - amount - negative or positive amount
 // ? @return {number} - agencyCash
-carMarket.decrementOrIncrementCashOfAgency = function(idAgency, amount){
-  
+carMarket.decrementOrIncrementCashOfAgency = function (idAgency, amount) {
+  const agencyObj = this.sellers.find(agency => agency.agencyId === idAgency);
+  agencyObj.cash += amount;
+  return agencyObj.cash;
 }
+// console.log(carMarket.decrementOrIncrementCashOfAgency('26_IPfHU1', -1));
 
 
 //* decrementOrIncrementCreditOfAgency
 //? @param {string} - agencyId
 //? @param {number} - amount - negative or positive amount
-// ? @return {number} - agencyCash
+// ? @return {number} - agencyCash // (Surely this is a mistake, i return credit)
+carMarket.decrementOrIncrementCreditOfAgency = function (idAgency, amount) {
+  const agencyObj = this.sellers.find(agency => agency.agencyId === idAgency);
+  agencyObj.credit += amount;
+  return agencyObj.credit;
+}
+// console.log(carMarket.decrementOrIncrementCreditOfAgency('26_IPfHU1', -1));
+
+
 //* setAmountOfCarsToBuyToAllAgency's
 //? set a new property amountOfCars to all agency's, that represent the amount of cars available in the agency.
 //? @param {}
 // ? @return {objects[]} - sellers - array of all agency's
+carMarket.setAmountOfCarsToBuyToAllAgencys = function () {
+  objCarsCounter = {};
+  this.sellers.forEach(objAgency => {
+    objAgency.cars.forEach(objCars => {
+      if (!objCarsCounter[objAgency.agencyName]) {
+        objCarsCounter[objAgency.agencyName] = objCars.models.length;
+      } else {
+        objCarsCounter[objAgency.agencyName] += objCars.models.length;
+      }
+    });
+    objAgency.amountOfCars = objCarsCounter[objAgency.agencyName];
+  });
+  return this.sellers;
+}
+console.log(carMarket.setAmountOfCarsToBuyToAllAgencys());
+
+
 //todo setters
 //* setCarToCostumer
 //? @param {string} - costumerId
