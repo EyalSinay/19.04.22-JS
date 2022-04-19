@@ -655,7 +655,14 @@ carMarket.getAllAgenciesName = function () {
 //? @param {}
 //? @return {object[]} - allCarsToBuy - arrays of all cars objects
 carMarket.getAllCarToBuy = function () {
-  return this.sellers.map(obj => obj.cars);
+  const arrCars = this.sellers.map(obj => obj.cars);
+  const arrObj = [];
+  arrCars.forEach(element => {
+    for (obj of element) {
+      arrObj.push(obj);
+    }
+  });
+  return arrObj;
 }
 // console.log(carMarket.getAllCarToBuy());
 
@@ -705,7 +712,7 @@ carMarket.getCustomerIdByName = function (nameCustomer) {
 //* getAllCustomersNames
 //? @param {}
 //? @return {string[]} - customersNameArr -  Array of all customers name
-carMarket.getAllCustomersNames = function(){
+carMarket.getAllCustomersNames = function () {
   return this.customers.map(obj => obj.name);
 }
 // console.log(carMarket.getAllCustomersNames());
@@ -714,17 +721,17 @@ carMarket.getAllCustomersNames = function(){
 //* getAllCustomerCars
 //? @param {id} - costumerId - costumer id
 //? @return {object[]} - customerCarsArr -  Array of all customer cars object
-carMarket.getAllCustomerCars = function(idCustomer){
+carMarket.getAllCustomerCars = function (idCustomer) {
   const customerId = this.customers.find(obj => obj.id === idCustomer);
   return customerId.cars;
 }
-// console.log(carMarket.getAllCustomerCars('BGzHhjnE8'));
+// console.log(carMarket.getAllCustomerCars('2RprZ1dbL'));
 
 
 //* getCustomerCash
 //? @param {id} - costumerId - costumer id
 //? @return {number} - CustomerCash
-carMarket.getCustomerCash = function(idCustomer){
+carMarket.getCustomerCash = function (idCustomer) {
   const customerId = this.customers.find(obj => obj.id === idCustomer);
   return customerId.cash;
 }
@@ -738,7 +745,37 @@ carMarket.getCustomerCash = function(idCustomer){
 //? set all cars model object the current brand
 //? @param {}
 //? @return {}
+carMarket.setPropertyBrandToAllCars = function () {
+  // sellers:
+  const sellersCars = carMarket.getAllCarToBuy();
+  const ArrBrandToNameCar = {};
+  for (objCars of sellersCars) {
+    const brandCar = objCars.brand;
+    for (objModel of objCars.models) {
+      objModel.brand = brandCar;
+      if (!ArrBrandToNameCar[brandCar]) {
+        ArrBrandToNameCar[brandCar] = [objModel.name];
+      }
+      else if (!ArrBrandToNameCar[brandCar].find(carName => carName === objModel.name)) {
+        ArrBrandToNameCar[brandCar].push(objModel.name);
+      }
+    }
+  }
 
+  // customer:
+  this.customers.forEach(objCustomer => {
+    objCustomer.cars.forEach(objCar => {
+      const nameCar = objCar.name;
+      for (car in ArrBrandToNameCar) {
+        if (ArrBrandToNameCar[car].some(carName => carName === nameCar)) {
+          objCar.brand = car;
+        }
+      }
+    });
+  });
+}
+carMarket.setPropertyBrandToAllCars();
+// console.log(carMarket);
 
 
 //todo Agency setters
@@ -746,14 +783,59 @@ carMarket.getCustomerCash = function(idCustomer){
 //? @param {string} - id of agency
 //? @param {object} - carObject
 //? @return {}
+carMarket.setNewCarToAgency = function (idAgency, carObject) {
+  const agency = this.sellers.find(objCar => objCar.agencyId === idAgency);
+  agency.cars.push(carObject);
+}
+// carMarket.setNewCarToAgency('Plyq5M5AZ', {
+//   brand: 'kuku',
+//           models: [
+//             {
+//               name: 'shushu',
+//               year: 111,
+//               price: 1372222000,
+//               carNumber: '4343rerfwe',
+//               ownerId: '5345fgdfg',
+//             },
+//             {
+//               name: 'lulu',
+//               year: 20254540,
+//               price: 9665456400,
+//               carNumber: 'jjj',
+//               ownerId: 'hhh',
+//             },
+//           ],
+// });
+
+
 //* deleteCarFromAgency
 //? @param {string} - id of agency
 //? @param {string} -  Car id
 // ? @return {}
+carMarket.deleteCarFromAgency = function (idAgency, idCar) {
+  const carsAgency = carMarket.getAllCarToBuyByAgencyId(idAgency);
+  for (obj of carsAgency) {
+    const carsIndex = obj.models.findIndex((objCar) => {
+      return objCar.carNumber === idCar;
+    });
+    if (carsIndex > -1) {
+      obj.models.splice(carsIndex, 1);
+      break
+    };
+  }
+}
+// carMarket.deleteCarFromAgency('Plyq5M5AZ', 'AZJZ4');
+
+
 //* decrementOrIncrementCashOfAgency
 //? @param {string} - agencyId
 //? @param {number} - amount - negative or positive amount
 // ? @return {number} - agencyCash
+carMarket.decrementOrIncrementCashOfAgency = function(idAgency, amount){
+  
+}
+
+
 //* decrementOrIncrementCreditOfAgency
 //? @param {string} - agencyId
 //? @param {number} - amount - negative or positive amount
