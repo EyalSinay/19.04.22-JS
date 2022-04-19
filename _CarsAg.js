@@ -627,51 +627,151 @@ const carMarket = {
 //* getAgencyByName
 //? @param {string} - name
 //? @return {Object} - agency object
-
-carMarket.getAgencyByName = function(name){
-    return carMarket.sellers.find(obj => obj.agencyName === name);
+carMarket.getAgencyByName = function (nameAgency) {
+  return this.sellers.find(obj => obj.agencyName === nameAgency);
 }
-console.log(carMarket.getAgencyByName('Best Deal'));
+// console.log(carMarket.getAgencyByName('Best Deal'));
 
 
 //* getAgencyIdByName
 //? @param {String} - name
 //? @return {String} - agencyId
+carMarket.getAgencyIdByName = function (nameAgency) {
+  return carMarket.getAgencyByName(nameAgency).agencyId;
+}
+// console.log(carMarket.getAgencyIdByName('Best Deal'));
+
 
 //* getAllAgenciesName
 //? @param {}
 //? @return {string[]} - agenciesNameArr - Array of all agencies name
+carMarket.getAllAgenciesName = function () {
+  return this.sellers.map(obj => obj.agencyName);
+}
+// console.log(carMarket.getAllAgenciesName());
+
 
 //* getAllCarToBuy
 //? @param {}
 //? @return {object[]} - allCarsToBuy - arrays of all cars objects
+carMarket.getAllCarToBuy = function () {
+  return this.sellers.map(obj => obj.cars);
+}
+// console.log(carMarket.getAllCarToBuy());
+
 
 //* getAllCarToBuyByAgencyId
 //? @param {string} - id of agency
 //? @return {object[]} - carsArray - arrays of all models objects of specific agency
+carMarket.getAllCarToBuyByAgencyId = function (idAgency) {
+  const Agency = this.sellers.find(obj => obj.agencyId === idAgency);
+  return Agency.cars;
+}
+// console.log(carMarket.getAllCarToBuyByAgencyId('Plyq5M5AZ'));
+
 
 //* getAllBrandsToBuyAgencyId
 //? @param {string} - agencyId -  id of agency
 // ? @return {string[]} - arrOfBrands - arrays of all brands name in specific agency
+carMarket.getAllBrandsToBuyAgencyId = function (idAgency) {
+  const AgencyId = carMarket.getAllCarToBuyByAgencyId(idAgency);
+  return AgencyId.map(obj => obj.brand)
+}
+// console.log(carMarket.getAllBrandsToBuyAgencyId('Plyq5M5AZ'));
+
 
 //! customer func's
 //todo getters
 //* getCustomerByName
 //? @param {string} - name
 //? @return {Object} - customer
+carMarket.getCustomerByName = function (nameCustomer) {
+  return this.customers.find(obj => obj.name === nameCustomer);
+}
+// console.log(carMarket.getCustomerByName('Lilah Goulding'));
+
+
 
 //* getCustomerIdByName
 //? @param {name}
 //? @return {String} - customerId - The customer id
+carMarket.getCustomerIdByName = function (nameCustomer) {
+  return carMarket.getCustomerByName(nameCustomer).id;
+}
+// console.log(carMarket.getCustomerIdByName('Lilah Goulding'));
+
+
 
 //* getAllCustomersNames
 //? @param {}
 //? @return {string[]} - customersNameArr -  Array of all customers name
+carMarket.getAllCustomersNames = function(){
+  return this.customers.map(obj => obj.name);
+}
+// console.log(carMarket.getAllCustomersNames());
+
 
 //* getAllCustomerCars
 //? @param {id} - costumerId - costumer id
 //? @return {object[]} - customerCarsArr -  Array of all customer cars object
+carMarket.getAllCustomerCars = function(idCustomer){
+  const customerId = this.customers.find(obj => obj.id === idCustomer);
+  return customerId.cars;
+}
+// console.log(carMarket.getAllCustomerCars('BGzHhjnE8'));
+
 
 //* getCustomerCash
 //? @param {id} - costumerId - costumer id
 //? @return {number} - CustomerCash
+carMarket.getCustomerCash = function(idCustomer){
+  const customerId = this.customers.find(obj => obj.id === idCustomer);
+  return customerId.cash;
+}
+// console.log(carMarket.getCustomerCash('BGzHhjnE8'));
+
+
+
+
+//!------------------------------------------------------------
+//*  1) setPropertyBrandToAllCars
+//? set all cars model object the current brand
+//? @param {}
+//? @return {}
+
+
+
+//todo Agency setters
+//* setNewCarToAgency
+//? @param {string} - id of agency
+//? @param {object} - carObject
+//? @return {}
+//* deleteCarFromAgency
+//? @param {string} - id of agency
+//? @param {string} -  Car id
+// ? @return {}
+//* decrementOrIncrementCashOfAgency
+//? @param {string} - agencyId
+//? @param {number} - amount - negative or positive amount
+// ? @return {number} - agencyCash
+//* decrementOrIncrementCreditOfAgency
+//? @param {string} - agencyId
+//? @param {number} - amount - negative or positive amount
+// ? @return {number} - agencyCash
+//* setAmountOfCarsToBuyToAllAgency's
+//? set a new property amountOfCars to all agency's, that represent the amount of cars available in the agency.
+//? @param {}
+// ? @return {objects[]} - sellers - array of all agency's
+//todo setters
+//* setCarToCostumer
+//? @param {string} - costumerId
+//? @param {object} - carObject
+//? @return {object[]} - allCarsOfCostumer
+//* deleteCarOfCostumer
+//? @param {string} - costumerId
+//? @param {string} - carId
+//? @return {object[]} - allCarsOfCostumer
+//* decrementOrIncrementCashOfCostumer
+//? @param {string} - costumerId
+//? @param {number} - amount - negative or positive amount
+// ? @return {number} - costumerCash
